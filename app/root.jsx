@@ -15,6 +15,9 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import TopBar from '~/components/TopBar';
+
+
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -156,8 +159,13 @@ export function Layout({children}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+        />
       </head>
       <body>
+      <TopBar />
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />

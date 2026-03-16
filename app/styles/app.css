@@ -643,3 +643,20 @@ button.reset:hover:not(:has(> *)) {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+
+
+.topbar {
+  background: #0b1f3a;
+  color: white;
+  font-size: 14px;
+}
+
+.topbar-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

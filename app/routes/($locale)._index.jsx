@@ -3,6 +3,12 @@ import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
 import {MockShopNotice} from '~/components/MockShopNotice';
+import TopBar from '~/components/TopBar';
+import Hero from '~/components/Hero';
+import Categories from '~/components/Categories';
+import ProductGrid from '~/components/ProductGrid';
+
+
 
 /**
  * @type {Route.MetaFunction}
@@ -64,8 +70,17 @@ function loadDeferredData({context}) {
 export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
-  return (
+  return (    
     <div className="home">
+      <Hero />
+      <Categories />
+      
+      <Suspense fallback={<div>Loading...</div>}>
+  <Await resolve={data.recommendedProducts}>
+    {(response) => <ProductGrid products={response} />}
+  </Await>
+</Suspense>
+
       {data.isShopLinked ? null : <MockShopNotice />}
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
@@ -155,32 +170,43 @@ const FEATURED_COLLECTION_QUERY = `#graphql
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
+  id
+  title
+  handle
+
+  priceRange {
+    minVariantPrice {
+      amount
+      currencyCode
     }
   }
+
+  featuredImage {
+    id
+    url
+    altText
+    width
+    height
+  }
+
+  variants(first: 1) {
+    nodes {
+      id
+      title
+    }
+  }
+}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...RecommendedProduct
       }
     }
   }
 `;
+
+
 
 /** @typedef {import('./+types/_index').Route} Route */
 /** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
